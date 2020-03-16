@@ -20,10 +20,12 @@
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~1.5.0",
     "react-native-image-picker": "^2.3.1",
+    "react-native-image-resizer": "^1.2.0",
     "react-native-reanimated": "~1.4.0",
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-unimodules": "~0.7.0",
-    "react-native-web": "~0.11.7"
+    "react-native-web": "~0.11.7",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -14,6 +14,7 @@ import * as jpeg from 'jpeg-js'
 import RNFetchBlob from 'rn-fetch-blob'
 import ImagePicker from 'react-native-image-picker'
 import ImageResizer from 'react-native-image-resizer';
+import ImageCropper from 'react-native-image-crop-picker';
 import { Tensor } from "@tensorflow/tfjs-core";
 
 import modelJson from './assets/model/model.json'
@@ -50,7 +51,7 @@ class App extends PureComponent<Props, State> {
         isTfReady: false,
         isModelReady: false,
         predictions: null,
-        image: null
+        image: null,
     };
 
     public async componentDidMount(): Promise<void> {
@@ -109,16 +110,25 @@ class App extends PureComponent<Props, State> {
     private makePrediction = async (response) => {
         this.setState({ predictions: 'Processing...' });
 
-        const imageData = await RNFetchBlob.fs.readFile(response.path, 'ascii');
+        const croppedImage =
+            await ImageCropper.openCropper({
+                path: `file://${response.path}`,
+                cropping: true,
+            });
+        const imageData = await RNFetchBlob.fs.readFile(croppedImage.path, 'ascii');
+        const tensorTic = new Date().getTime();
         const tensor =
-            this.imageToTensor(imageData)
+            tf.image.resizeBilinear(this.imageToTensor(imageData), [64,64])
                 .reshape([1, 64, 64, 3])
                 .div(255);
+        const tensorToc = new Date().getTime();
+        const tic = new Date().getTime();
         const prediction = await this.model.predict(tensor) as Tensor[];
         const label = await mapPredictionToLabel(prediction);
+        const toc = new Date().getTime();
 
         this.setState({
-            predictions: label,
+            predictions: `${label}.\nFeedforward time: ${toc-tic}ms.\nImage resizing time: ${tensorToc-tensorTic}\nTotal time: ${toc-tensorTic}`,
         });
     };
 
@@ -140,7 +150,7 @@ class App extends PureComponent<Props, State> {
     };
 
     private selectImage = async () => {
-        ImagePicker.launchCamera({ noData: true, maxHeight: 64, maxWidth: 64 }, async (response) => {
+        ImagePicker.launchCamera({ noData: true }, async (response) => {
             if (!response.didCancel) {
                 const source = { uri: response.uri };
                 this.setState({ image: source });
@@ -162,7 +172,8 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#ffffff',
-        fontSize: 16
+        fontSize: 16,
+        textAlign: 'center',
     },
     loadingModelContainer: {
         flexDirection: 'row',

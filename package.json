@@ -19,6 +19,7 @@
     "react-native": "~0.61.4",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~1.5.0",
+    "react-native-image-crop-picker": "^0.28.0",
     "react-native-image-picker": "^2.3.1",
     "react-native-image-resizer": "^1.2.0",
     "react-native-reanimated": "~1.4.0",

@@ -1,8 +1,8 @@
-# house-number-ocr
+# Description
 
-This project was created to recognize house numbers using a camera.
+This project was created for recognizing house numbers using a camera.
 The goal of this project was to launch [own neural network](https://github.com/kirillzyusko/deeplearning/blob/master/4/lab.ipynb),
-created via Python, and run it in react-native.
+created via Python in react-native.
 
 # Screenshots
 
